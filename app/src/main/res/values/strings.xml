@@ -1,31 +1,3 @@
 <resources>
-    <string name="app_name">My Application</string>
-    <string name="text1">Нетология. Унивирситет интренет проф...</string>
-    <string name="text2">Привет, это новая Нетология! Когда-то Нетология
-начиналась с интенсивов по онлайн-маркетингу. Затем
-появились курсы по дизайну, разработке, аналитике
-иуправлению. Мы растём сами и помогаем расти
-студентам: от новичков до уверенных профессионалов.
-Но самое важное остаётся снами: мы верим, что в
-
-каждом уже есть сила, которая заставляет хотеть
-больше, целиться выше, бежать быстрее. Наша миссия
-
-— помочь встать на путь роста и начать цепочку
-
-перемен... netology.ru </string>
-    <string name="data">21 мая в 18:36</string>
-    <string name="like">999</string>
-    <string name="share">99</string>
-    <string name="smotr">999</string>
-    <string name="remove">Удалить\n</string>
-    <string name="edit">Редактировать\n</string>
-    <string name="post_text">Введите ваш пост\n</string>
-    <string name="error_empty_content">Ошибка\n</string>
-    <string name="newp">Дoбавить</string>
-    <string name="newad">Отправить</string>
-    <string name="postshare">Поделиться постому\n</string>
-    <string name="video">Включить</string>
-    <string name="cancel">Отменить</string>
-
+    <string name="app_name">zan11</string>
 </resources>
