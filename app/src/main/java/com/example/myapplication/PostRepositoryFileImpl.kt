@@ -63,7 +63,7 @@ class PostRepositoryFileImpl(private val context: Context, ) : PostRepository {
     override fun shareById(id: Int) {
         posts = posts.map {
             if (it.id != id) it else
-                it.copy(shareByMe = !it.shareByMe, share = it.share+1)
+                it.copy(share = it.share+1)
         }
         data.value = posts
         sync()

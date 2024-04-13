@@ -15,7 +15,6 @@ class PostRepositoryInMemoryImpl : PostRepository{
             like = 999,
             share = 99,
             likedByMe = false,
-            shareByMe=false
         ),
         Post(
             id = 2,
@@ -25,7 +24,6 @@ class PostRepositoryInMemoryImpl : PostRepository{
             like = 9999,
             share = 999,
             likedByMe = false,
-            shareByMe=false
         ),
         Post(
             id = 3,
@@ -35,7 +33,6 @@ class PostRepositoryInMemoryImpl : PostRepository{
             like = 999999,
             share = 9999,
             likedByMe = false,
-            shareByMe=false
         ),
     ).
     reversed()
@@ -48,7 +45,6 @@ class PostRepositoryInMemoryImpl : PostRepository{
                 author = "Я",
                 likedByMe = false,
                 published = "Сейчас",
-                shareByMe = false
             )
             ) + posts
             data.value = posts
@@ -69,7 +65,7 @@ class PostRepositoryInMemoryImpl : PostRepository{
     override fun shareById(id: Int) {
         posts = posts.map {
             if (it.id != id) it else
-                it.copy(shareByMe = !it.shareByMe, share = it.share+1)
+                it.copy( share = it.share+1)
         }
         data.value = posts
     }
