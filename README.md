@@ -1,2 +1,0 @@
-# zanatie1
-Kotlin
