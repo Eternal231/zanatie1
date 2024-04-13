@@ -1,5 +1,7 @@
 package com.example.myapplication
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.Post
@@ -15,9 +17,10 @@ private val empty = Post(
     like = 0,
     share = 0
 )
-class PostViewModel : ViewModel() {
-    private val repository: PostRepository = PostRepositoryInMemoryImpl()
+class PostViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository: PostRepository = PostRepositorySharedPrefsImpl(application)
     val data = repository.getAll()
+    val selectedPost = MutableLiveData<Post>()
     val edited = MutableLiveData(empty)
     fun save() {
         edited.value?.let {
@@ -40,4 +43,10 @@ class PostViewModel : ViewModel() {
     fun likeById(id: Int)=repository.likeById(id)
     fun shareById(id: Int)=repository.shareById(id)
     fun removeById(id: Int) = repository.removeById(id)
+
+    fun getPostById(id: Int) {
+        repository.postID(id).observeForever {
+            selectedPost.value = it
+        }
+    }
 }

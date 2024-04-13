@@ -2,7 +2,6 @@ package com.example.myapplication
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.myapplication.Post
 
 
 class PostRepositoryInMemoryImpl : PostRepository{
@@ -46,7 +45,7 @@ class PostRepositoryInMemoryImpl : PostRepository{
         if(post.id==0){
             posts = listOf(post.copy(
                 id = nextId++,
-                author = "Артем Деменский",
+                author = "Я",
                 likedByMe = false,
                 published = "Сейчас",
                 shareByMe = false
@@ -78,6 +77,12 @@ class PostRepositoryInMemoryImpl : PostRepository{
     override fun removeById(id: Int) {
         posts = posts.filter { it.id!=id }
         data.value = posts
+    }
+    override fun postID(id: Int): LiveData<Post> {
+        val postLiveData = MutableLiveData<Post>()
+        postLiveData.value = posts.find { it.id == id }
+
+        return postLiveData
     }
 }
 
