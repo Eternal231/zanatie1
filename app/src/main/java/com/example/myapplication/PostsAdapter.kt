@@ -44,10 +44,8 @@ class PostViewHolder(
             textView5.text = post.content
             textView7.text = post.like.toString()
             textView9.text = post.share.toString()
-            imageView11.setImageResource(
-                if (post.likedByMe) R.drawable.like_krasn else R.drawable.heart
-            )
-            imageView.setOnClickListener {
+            like.isChecked = post.likedByMe
+            menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
                     inflate(R.menu.popup_menu)
                     setOnMenuItemClickListener { item ->
@@ -65,7 +63,7 @@ class PostViewHolder(
                     }
                 }.show()
             }
-            imageView11.setOnClickListener {
+            like.setOnClickListener {
                 onInteractionListener.onLike(post)
             }
             textView7.text = post.like.toString()
@@ -74,7 +72,7 @@ class PostViewHolder(
                 post.like < 1000 -> textView7.text = post.like.toString()
                 else -> textView7.text = String.format("%.1fM", post.like.toDouble() / 1000000)
             }
-            imageView12.setOnClickListener {
+            share.setOnClickListener {
                 onInteractionListener.onShare(post)
             }
             textView9.text = post.share.toString()

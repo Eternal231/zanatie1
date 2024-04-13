@@ -73,6 +73,7 @@
             android:layout_height="567dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/card_post" />
+
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
