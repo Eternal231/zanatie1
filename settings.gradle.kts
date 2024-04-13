@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "zan11"
+rootProject.name = "My Application"
 include(":app")
  
