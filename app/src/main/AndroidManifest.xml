@@ -13,12 +13,10 @@
         android:theme="@style/Theme.Material3.Dark"
         tools:targetApi="31">
         <activity
-            android:name=".NewPostActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".IntentHandlerActivity"
-            android:exported="true" >
+            android:name=".Fragment"
+            android:exported="true">
+            <nav-graph android:value="@navigation/navigation" />
+
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -26,15 +24,14 @@
 
                 <data android:mimeType="text/plain" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".MainActivity"
-            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
+
         </activity>
     </application>
 

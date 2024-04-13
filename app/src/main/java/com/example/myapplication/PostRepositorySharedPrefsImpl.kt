@@ -8,9 +8,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 
-class PostRepositorySharedPrefsImpl(contex: Context): PostRepository {
+class PostRepositorySharedPrefsImpl(context: Context): PostRepository {
     private val gson = Gson()
-    private val prefs = contex.getSharedPreferences("repo", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences("repo", Context.MODE_PRIVATE)
     private val type = TypeToken.getParameterized(List::class.java, Post::class.java).type
     private val key = "posts"
     private var nextId = 1
@@ -25,71 +25,58 @@ class PostRepositorySharedPrefsImpl(contex: Context): PostRepository {
     }
 
     override fun getAll(): LiveData<List<Post>> = data
-    override fun likeById(id: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun shareById(id: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun removeById(id: Int) {
-        TODO("Not yet implemented")
-    }
-
-    private fun sync() {
-        with(prefs.edit()) {
-            putString(key, gson.toJson(posts))
-            apply()
-        }
-    }
-
     override fun save(post: Post) {
-        if (post.id == 0) {
-            posts = listOf(
-                post.copy(
-                    id = nextId++,
-                    author = "Me",
-                    likedByMe = false,
-                    published = "now",
-                    shareByMe = false
-                )
+        if(post.id==0){
+            posts = listOf(post.copy(
+                id = nextId++,
+                author = "Я",
+                likedByMe = false,
+                published = "Сейчас",
+                shareByMe = false
+            )
             ) + posts
             data.value = posts
+            sync()
             return
         }
-        posts = posts.map {
-            if (it.id != post.id) it else it.copy(
-                content = post.content,
-                like = post.like,
-                share = post.share
-            )
+        posts = posts.map{
+            if (it.id != post.id) it else it.copy (content = post.content, like = post.like, share = post.share)
         }
         data.value = posts
         sync()
-        fun likeById(id: Int) {
-            posts = posts.map {
-                if (it.id != id) it else it.copy(
-                    likedByMe = !it.likedByMe,
-                    like = if (!it.likedByMe) it.like + 1 else it.like - 1
-                )
-            }
-            data.value = posts
-            sync()
-        }
+    }
+    override fun postID(id: Int): LiveData<Post> {
+        val postLiveData = MutableLiveData<Post>()
+        postLiveData.value = posts.find { it.id == id }
 
-        fun shareById(id: Int) {
-            posts = posts.map {
-                if (it.id != id) it else it.copy(shareByMe = !it.shareByMe, share = it.share + 1)
-            }
-            data.value = posts
-            sync()
+        return postLiveData
+    }
+    override fun likeById(id: Int) {
+        posts = posts.map {
+            if (it.id != id) it else
+                it.copy(likedByMe = !it.likedByMe, like = if (!it.likedByMe) it.like+1 else it.like-1)
         }
+        data.value = posts
+        sync()
+    }
+    override fun shareById(id: Int) {
+        posts = posts.map {
+            if (it.id != id) it else
+                it.copy(shareByMe = !it.shareByMe, share = it.share+1)
+        }
+        data.value = posts
+        sync()
+    }
 
-        fun removeById(id: Int) {
-            posts = posts.filter { it.id != id }
-            data.value = posts
-            sync()
+    override fun removeById(id: Int) {
+        posts = posts.filter { it.id!=id }
+        data.value = posts
+        sync()
+    }
+    private fun sync(){
+        with(prefs.edit()){
+            putString(key, gson.toJson(posts))
+            apply()
         }
     }
 }

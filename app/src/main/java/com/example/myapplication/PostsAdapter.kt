@@ -6,19 +6,22 @@ import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.Post
 import com.example.myapplication.R
 import com.example.myapplication.databinding.CardPostBinding
-
+import com.example.myapplication.Post
 import kotlin.math.ln
 import kotlin.math.pow
+typealias OnLikeListener = (post: Post) -> Unit
+typealias OnShareListener = (post: Post) -> Unit
+
+
 interface OnInteractionListener {
     fun onLike(post: Post) {}
     fun onShare(post: Post) {}
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
-
     fun onVideo(post: Post){}
+    fun onAuthorClicked(post: Post) {}
 }
 class PostsAdapter(
     private val onInteractionListener: OnInteractionListener
@@ -27,7 +30,6 @@ class PostsAdapter(
         val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PostViewHolder(binding, onInteractionListener)
     }
-
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = getItem(position)
         holder.bind(post)
@@ -45,6 +47,8 @@ class PostViewHolder(
             textView7.text = post.like.toString()
             textView9.text = post.share.toString()
             like.isChecked = post.likedByMe
+            textView7.text = getFormatedNumber(post.like.toLong())
+            textView9.text = getFormatedNumber(post.share.toLong())
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
                     inflate(R.menu.popup_menu)
@@ -89,13 +93,12 @@ class PostViewHolder(
             play.setOnClickListener {
                 onInteractionListener.onVideo(post)
             }
+            textView2.setOnClickListener {
+                onInteractionListener.onAuthorClicked(post)
+            }
         }
     }
 }
-
-
-//
-
 fun getFormatedNumber(count: Long): String {
     if (count < 1000) return "" + count
     val exp = (ln(count.toDouble()) / ln(1000.0)).toInt()
@@ -105,6 +108,8 @@ class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
     override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
         return oldItem.id == newItem.id
     }
+
     override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
-        return oldItem == newItem }
+        return oldItem == newItem
+    }
 }
