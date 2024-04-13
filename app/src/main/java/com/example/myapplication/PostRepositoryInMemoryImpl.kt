@@ -2,7 +2,6 @@ package com.example.myapplication
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.myapplication.Post
 
 
 class PostRepositoryInMemoryImpl : PostRepository{
@@ -16,7 +15,6 @@ class PostRepositoryInMemoryImpl : PostRepository{
             like = 999,
             share = 99,
             likedByMe = false,
-            shareByMe=false
         ),
         Post(
             id = 2,
@@ -26,7 +24,6 @@ class PostRepositoryInMemoryImpl : PostRepository{
             like = 9999,
             share = 999,
             likedByMe = false,
-            shareByMe=false
         ),
         Post(
             id = 3,
@@ -36,7 +33,6 @@ class PostRepositoryInMemoryImpl : PostRepository{
             like = 999999,
             share = 9999,
             likedByMe = false,
-            shareByMe=false
         ),
     ).
     reversed()
@@ -46,10 +42,9 @@ class PostRepositoryInMemoryImpl : PostRepository{
         if(post.id==0){
             posts = listOf(post.copy(
                 id = nextId++,
-                author = "Артем Деменский",
+                author = "Я",
                 likedByMe = false,
                 published = "Сейчас",
-                shareByMe = false
             )
             ) + posts
             data.value = posts
@@ -70,7 +65,7 @@ class PostRepositoryInMemoryImpl : PostRepository{
     override fun shareById(id: Int) {
         posts = posts.map {
             if (it.id != id) it else
-                it.copy(shareByMe = !it.shareByMe, share = it.share+1)
+                it.copy( share = it.share+1)
         }
         data.value = posts
     }
@@ -78,6 +73,12 @@ class PostRepositoryInMemoryImpl : PostRepository{
     override fun removeById(id: Int) {
         posts = posts.filter { it.id!=id }
         data.value = posts
+    }
+    override fun postID(id: Int): LiveData<Post> {
+        val postLiveData = MutableLiveData<Post>()
+        postLiveData.value = posts.find { it.id == id }
+
+        return postLiveData
     }
 }
 

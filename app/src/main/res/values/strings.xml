@@ -27,5 +27,6 @@
     <string name="postshare">Поделиться постому\n</string>
     <string name="video">Включить</string>
     <string name="cancel">Отменить</string>
+    <string name="chooser_share_post">Поделиться постом</string>
 
 </resources>
