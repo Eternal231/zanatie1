@@ -38,43 +38,15 @@ class PostRepositoryInMemoryImpl : PostRepository{
             likedByMe = false,
             shareByMe=false
         ),
-    )
+    ).
+    reversed()
     private val data = MutableLiveData(posts)
-
     override fun getAll(): LiveData<List<Post>> = data
-
-    override fun likeById(id: Int) {
-        posts = posts.map {
-            if(it.id!= id.toInt()) it else it.copy(likedByMe = !it.likedByMe)
-        }
-        posts.map{
-            if(it.likedByMe && it.id == id.toInt()) it.like++ else it
-        }
-        posts.map {
-            if(!it.likedByMe && it.id == id.toInt()) it.like-- else it
-        }
-        data.value = posts
-    }
-    override fun shareById(id: Int) {
-        posts = posts.map {
-            if(it.id!= id.toInt()) it else it.copy(shareByMe = !it.shareByMe)
-        }
-        posts.map {
-            if (it.id != id.toInt()) it else it.share++
-        }
-        data.value = posts
-    }
-
-    override fun removeById(id: Int) {
-        posts = posts.filter { it.id!=id }
-        data.value = posts
-    }
-
     override fun save(post: Post) {
         if(post.id==0){
             posts = listOf(post.copy(
                 id = nextId++,
-                author = "Артем Тарасов",
+                author = "Артем Деменский",
                 likedByMe = false,
                 published = "Сейчас",
                 shareByMe = false
@@ -83,6 +55,29 @@ class PostRepositoryInMemoryImpl : PostRepository{
             data.value = posts
             return
         }
+        posts = posts.map{
+            if (it.id != post.id) it else it.copy (content = post.content, like = post.like, share = post.share)
+        }
+        data.value = posts
+    }
+    override fun likeById(id: Int) {
+        posts = posts.map {
+            if (it.id != id) it else
+                it.copy(likedByMe = !it.likedByMe, like = if (!it.likedByMe) it.like+1 else it.like-1)
+        }
+        data.value = posts
+    }
+    override fun shareById(id: Int) {
+        posts = posts.map {
+            if (it.id != id) it else
+                it.copy(shareByMe = !it.shareByMe, share = it.share+1)
+        }
+        data.value = posts
+    }
+
+    override fun removeById(id: Int) {
+        posts = posts.filter { it.id!=id }
+        data.value = posts
     }
 }
 

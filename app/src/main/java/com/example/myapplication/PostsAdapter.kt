@@ -12,13 +12,13 @@ import com.example.myapplication.databinding.CardPostBinding
 
 import kotlin.math.ln
 import kotlin.math.pow
-typealias OnLikeListener = (post: Post) -> Unit
-typealias OnShareListener = (post: Post) -> Unit
 interface OnInteractionListener {
     fun onLike(post: Post) {}
     fun onShare(post: Post) {}
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
+
+    fun onVideo(post: Post){}
 }
 class PostsAdapter(
     private val onInteractionListener: OnInteractionListener
@@ -83,12 +83,24 @@ class PostViewHolder(
                     "%.1fM", post.share.toDouble() / 1000000
                 )
             }
+            video.setOnClickListener {
+                onInteractionListener.onVideo(post)
+            }
+            play.setOnClickListener {
+                onInteractionListener.onVideo(post)
+            }
         }
     }
 }
 
 
 //
+
+fun getFormatedNumber(count: Long): String {
+    if (count < 1000) return "" + count
+    val exp = (ln(count.toDouble()) / ln(1000.0)).toInt()
+    return String.format("%.1f %c", count / 1000.0.pow(exp.toDouble()), "KMGTPE"[exp - 1])
+}
 class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
     override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
         return oldItem.id == newItem.id

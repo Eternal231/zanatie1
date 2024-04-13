@@ -22,5 +22,10 @@
     <string name="edit">Редактировать\n</string>
     <string name="post_text">Введите ваш пост\n</string>
     <string name="error_empty_content">Ошибка\n</string>
+    <string name="newp">Дoбавить</string>
+    <string name="newad">Отправить</string>
+    <string name="postshare">Поделиться постому\n</string>
+    <string name="video">Включить</string>
+    <string name="cancel">Отменить</string>
 
 </resources>
