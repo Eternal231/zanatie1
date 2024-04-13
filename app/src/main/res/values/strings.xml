@@ -18,5 +18,9 @@
     <string name="like">999</string>
     <string name="share">99</string>
     <string name="smotr">999</string>
+    <string name="remove">Удалить\n</string>
+    <string name="edit">Редактировать\n</string>
+    <string name="post_text">Введите ваш пост\n</string>
+    <string name="error_empty_content">Ошибка\n</string>
 
 </resources>

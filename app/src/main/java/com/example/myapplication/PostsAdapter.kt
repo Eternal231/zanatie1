@@ -1,6 +1,8 @@
 package com.example.myapplication
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,13 +14,20 @@ import kotlin.math.ln
 import kotlin.math.pow
 typealias OnLikeListener = (post: Post) -> Unit
 typealias OnShareListener = (post: Post) -> Unit
+interface OnInteractionListener {
+    fun onLike(post: Post) {}
+    fun onShare(post: Post) {}
+    fun onEdit(post: Post) {}
+    fun onRemove(post: Post) {}
+}
 class PostsAdapter(
-    private val onLikeListener: OnLikeListener,
-    private val onShareListener: OnShareListener) : ListAdapter<Post, PostViewHolder>(PostDiffCallback()) {
+    private val onInteractionListener: OnInteractionListener
+) : ListAdapter<Post, PostViewHolder>(PostDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PostViewHolder(binding, onLikeListener, onShareListener)
+        return PostViewHolder(binding, onInteractionListener)
     }
+
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = getItem(position)
         holder.bind(post)
@@ -26,8 +35,7 @@ class PostsAdapter(
 }
 class PostViewHolder(
     private val binding: CardPostBinding,
-    private val onLikeListener: OnLikeListener,
-    private val onShareListener: OnShareListener
+    private val onInteractionListener: OnInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) {
         binding.apply {
@@ -39,8 +47,26 @@ class PostViewHolder(
             imageView11.setImageResource(
                 if (post.likedByMe) R.drawable.like_krasn else R.drawable.heart
             )
+            imageView.setOnClickListener {
+                PopupMenu(it.context, it).apply {
+                    inflate(R.menu.popup_menu)
+                    setOnMenuItemClickListener { item ->
+                        when (item.itemId) {
+                            R.id.remove -> {
+                                onInteractionListener.onRemove(post)
+                                true
+                            }
+                            R.id.edit -> {
+                                onInteractionListener.onEdit(post)
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                }.show()
+            }
             imageView11.setOnClickListener {
-                onLikeListener(post)
+                onInteractionListener.onLike(post)
             }
             textView7.text = post.like.toString()
             when {
@@ -49,7 +75,7 @@ class PostViewHolder(
                 else -> textView7.text = String.format("%.1fM", post.like.toDouble() / 1000000)
             }
             imageView12.setOnClickListener {
-                onShareListener(post)
+                onInteractionListener.onShare(post)
             }
             textView9.text = post.share.toString()
             when {
@@ -64,19 +90,11 @@ class PostViewHolder(
 }
 
 
-
-fun getFormatedNumber(count: Long): String {
-    if (count < 1000) return "" + count
-    val exp = (ln(count.toDouble()) / ln(1000.0)).toInt()
-    return String.format("%.1f %c", count / 1000.0.pow(exp.toDouble()), "KMGTPE"[exp - 1])
-}
-
+//
 class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
     override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
         return oldItem.id == newItem.id
     }
-
     override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
-        return oldItem == newItem
-    }
+        return oldItem == newItem }
 }

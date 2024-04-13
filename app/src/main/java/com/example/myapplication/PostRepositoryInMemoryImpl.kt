@@ -6,6 +6,7 @@ import com.example.myapplication.Post
 
 
 class PostRepositoryInMemoryImpl : PostRepository{
+    private var nextId=1
     private var posts = listOf(
         Post(
             id = 1,
@@ -62,6 +63,26 @@ class PostRepositoryInMemoryImpl : PostRepository{
             if (it.id != id.toInt()) it else it.share++
         }
         data.value = posts
+    }
+
+    override fun removeById(id: Int) {
+        posts = posts.filter { it.id!=id }
+        data.value = posts
+    }
+
+    override fun save(post: Post) {
+        if(post.id==0){
+            posts = listOf(post.copy(
+                id = nextId++,
+                author = "Артем Тарасов",
+                likedByMe = false,
+                published = "Сейчас",
+                shareByMe = false
+            )
+            ) + posts
+            data.value = posts
+            return
+        }
     }
 }
 
